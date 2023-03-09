@@ -81,6 +81,7 @@ async def gpconnect(nhsno: int, background_tasks: BackgroundTasks):
         headers=headers,
     )
 
+    print(r.status_code)
     scr_bundle = json.loads(r.text)
 
     # get rid of fhir_comments
