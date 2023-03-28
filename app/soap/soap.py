@@ -4,7 +4,7 @@ from urllib.request import Request
 import xmltodict
 from fastapi import APIRouter, HTTPException, Request, Response
 
-from ..ccda.helpers import clean_soap
+from ..ccda.helpers import clean_soap, validateNHSnumber
 from ..redis_connect import redis_connect
 from .responses import iti_38_response, iti_39_response
 
@@ -22,10 +22,42 @@ NAMESPACES = (
 )
 
 
-@router.post("/iti41")
-async def iti41(equest: Request):
-    # Response(content=data, media_type="application/xml")
-    pass
+@router.post("/iti47")
+async def iti41(request: Request):
+    content_type = request.headers["Content-Type"]
+    if content_type == "application/xml":
+        body = await request.body()
+        envelope = clean_soap(body)
+        # print(envelope)
+        try:
+            payload = envelope["Body"]["PRPA_IN201305UV02"]
+        except:
+            raise HTTPException(status_code=404, detail="ITI-47499 message not found")
+
+        control_act = payload["controlActProcess"]
+        query_id = control_act["queryByParameter"]["queryId"]
+        query_params = control_act["queryByParameter"]["parameterList"]
+
+        demographics = {
+            "livingSubjectId": None,
+            "livingSubjectAdministrativeGender": None,
+            "livingSubjectName": None,
+            "livingSubjectBirthTime": None,
+        }
+
+        for i in query_params:
+            if i in demographics:
+                demographics[i] = query_params[i]
+        print(demographics)
+        
+        #TODO check for valid nhs number
+        #TODO perform fhir pda enquiry
+
+        return demographics
+    else:
+        raise HTTPException(
+            status_code=400, detail=f"Content type {content_type} not supported"
+        )
 
 
 @router.post("/iti39")

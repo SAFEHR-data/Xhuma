@@ -6,6 +6,9 @@ from httpx import AsyncClient
 
 from ..redis_connect import redis_client
 
+UCLHOID = "2.16.840.1.113883.2.1.3.34"
+NHSOID = "1.2.826.0.1285"
+RMHOID = "2.16.840.1.113883.2.1.3.36"
 
 async def iti_39_response(message_id, document_id, document):
     registry_id = redis_client.get("registry")
@@ -26,7 +29,7 @@ async def iti_39_response(message_id, document_id, document):
                 "@status": "urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success",
                 "@xmlns": "urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0",
                 "DocumentResponse": {
-                    "HomeCommunityId": {"#text": f"urn:oid:{registry_id}"},
+                    "HomeCommunityId": {"#text": f"urn:oid:{UCLHOID}"},
                     "RepositoryUniqueId": {"#text": registry_id},
                     "DocumentUniqueId": {"#text": document_id},
                     "mimeType": {"#text": "text/xml"},
