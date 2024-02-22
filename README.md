@@ -35,7 +35,8 @@ Current the service is designed to interact with a requesting EHR via ITI reques
 ## Tasks
 Currently on open test environments only:
 - [ ] ITI 47
-- [ ] Fhir PDS lookup
+- [x] Fhir PDS lookup
+- [] Fhir SDS lookup
 - [x] ITI 38 call and response
 - [x] GP Connect call
 - [x] Fhir Bundle -> CCDA conversion
@@ -44,7 +45,7 @@ Currently on open test environments only:
 ## Todo
 - [ ] Flesh out html section of CCDA
 - [ ] Progress to NHS test environment
-- [ ] Sign up to PDS lookup
+- [x] Sign up to PDS lookup
 
 ---
 ## Running

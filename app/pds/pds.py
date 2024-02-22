@@ -2,7 +2,7 @@ import asyncio
 import json
 import os
 import uuid
-from datetime import timedelta
+import logging
 
 import fastapi
 import httpx
@@ -26,6 +26,7 @@ async def lookup_patient(nhsno: int):
 
     # if nhs token expired or not request, get one and cache
     if nhs_token is None:
+        logging.info(f"requesting new access token for PDS search for {nhsno}")
         full_path = f"{INT_BASE_PATH}oauth2/token"
         jwt_token = pds_jwt(API_KEY, API_KEY, full_path, "test-1")
 
@@ -53,10 +54,11 @@ async def lookup_patient(nhsno: int):
     url = f"{INT_BASE_PATH}personal-demographics/FHIR/R4/Patient/{nhsno}"
     # print(url)
 
+    logging.info(f"request PDS look up for {nhsno} with token {nhs_token}")
     r = httpx.get(url, headers=headers)
     patient_dict = json.loads(r.text)
-    # print(patient_dict)
-    # TODO add error handling
+
+    # TODO add better error handling
 
     return patient_dict
 
